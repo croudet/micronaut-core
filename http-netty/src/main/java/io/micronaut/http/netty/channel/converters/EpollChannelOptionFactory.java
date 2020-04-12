@@ -15,10 +15,11 @@
  */
 package io.micronaut.http.netty.channel.converters;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.context.env.Environment;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.http.netty.channel.EpollAvailabilityCondition;
 import io.netty.channel.ChannelOption;
@@ -33,21 +34,26 @@ import io.netty.channel.unix.UnixChannelOption;
 @Internal
 @Singleton
 @Requires(classes = Epoll.class, condition = EpollAvailabilityCondition.class)
-public class EpollChannelOptionFactory implements ChannelOptionFactory {
+public class EpollChannelOptionFactory extends DefaultChannelOptionFactory {
 
     static {
         // force loading the class for the channelOption to work
         EpollChannelOption.EPOLL_MODE.name();
     }
 
-    @Override
-    public ChannelOption<?> channelOption(String name) {
-        return DefaultChannelOptionFactory.channelOption(name, EpollChannelOption.class, UnixChannelOption.class);
+    /**
+     * Default constructor.
+     *
+     * @param channelOptions The ChannelOptions class.
+     */
+    @Inject
+    public EpollChannelOptionFactory(@Named("EpollChannelOptions") ChannelOptions channelOptions) {
+        super(channelOptions);
     }
 
     @Override
-    public Object convertValue(ChannelOption<?> option, Object value, Environment env) {
-        return DefaultChannelOptionFactory.convertValue(option, EpollChannelOption.class, value, env);
+    public ChannelOption<?> channelOption(String name) {
+        return channelOption(name, EpollChannelOption.class, UnixChannelOption.class);
     }
 
 }

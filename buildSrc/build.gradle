@@ -1,0 +1,23 @@
+plugins {
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'com.github.ben-manes.versions' version '0.28.0'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url 'https://jcenter.bintray.com' }
+}
+
+dependencyManagement {
+    dependencies {
+        dependency "io.netty:netty-transport-native-epoll:4.1.48.Final"
+        dependency "io.netty:netty-transport-native-kqueue:4.1.48.Final"
+    }
+}
+
+dependencies {
+    implementation "io.netty:netty-transport-native-epoll"
+    implementation "io.netty:netty-transport-native-kqueue"
+
+}

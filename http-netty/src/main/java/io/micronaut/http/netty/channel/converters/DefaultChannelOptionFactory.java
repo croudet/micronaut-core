@@ -15,16 +15,14 @@
  */
 package io.micronaut.http.netty.channel.converters;
 
-import java.lang.reflect.Field;
 import java.util.Optional;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.reflect.GenericTypeUtils;
-import io.micronaut.core.reflect.ReflectionUtils;
 import io.netty.channel.ChannelOption;
 
 /**
@@ -36,43 +34,25 @@ import io.netty.channel.ChannelOption;
 @Singleton
 public class DefaultChannelOptionFactory implements ChannelOptionFactory {
 
-    private static Object processChannelOptionValue(Class<? extends ChannelOption> cls, String name, Object value, Environment env) {
-        Optional<Field> declaredField = ReflectionUtils.findField(cls, name);
-        if (declaredField.isPresent()) {
-            Optional<Class> typeArg = GenericTypeUtils.resolveGenericTypeArgument(declaredField.get());
-            if (typeArg.isPresent()) {
-                Optional<Object> converted = env.convert(value, typeArg.get());
-                value = converted.orElse(value);
-            }
-        }
-        return value;
-    }
+    private final ChannelOptions channelOptions;
 
     /**
-     * Process a channel option value.
-     * @param option The channel option.
-     * @param cls The channel option type.
-     * @param value The value to convert.
-     * @param env The environment use to convert the value.
-     * @return The converted value.
+     * Default constructor.
+     *
+     * @param channelOptions The ChannelOptions class.
      */
-    static Object convertValue(ChannelOption<?> option, Class<? extends ChannelOption> cls, Object value, Environment env) {
-        final String name = option.name();
-        if (ChannelOption.exists(name)) {
-            int idx = name.lastIndexOf('#');
-            final String optionName;
-            if (idx > 0 && idx < name.length() - 1) {
-                // a composed name
-                optionName = name.substring(idx);
-            } else {
-                // A simple name
-                optionName = name;
-            }
-            return processChannelOptionValue(cls, optionName, value, env);
-        } else {
-            // Unknown option
-            return value;
+    @Inject
+    public DefaultChannelOptionFactory(ChannelOptions channelOptions) {
+        this.channelOptions = channelOptions;
+    }
+
+    @Override
+    public Object convertValue(ChannelOption<?> option, Object value, Environment env) {
+        final Optional<Class> cls = channelOptions.channelOptionType(option);
+        if (cls.isPresent()) {
+            return env.convert(value, cls.get()).orElse(value);
         }
+        return value;
     }
 
     /**

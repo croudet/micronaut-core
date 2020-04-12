@@ -18,10 +18,11 @@ package io.micronaut.http.netty.channel.converters;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.context.env.Environment;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.TypeConverterRegistrar;
@@ -39,21 +40,26 @@ import io.netty.channel.unix.UnixChannelOption;
 @Internal
 @Singleton
 @Requires(classes = KQueue.class, condition = KQueueAvailabilityCondition.class)
-public class KQueueChannelOptionFactory implements ChannelOptionFactory, TypeConverterRegistrar {
+public class KQueueChannelOptionFactory extends DefaultChannelOptionFactory implements TypeConverterRegistrar {
 
     static {
         // force loading the class for the channelOption to work
         KQueueChannelOption.SO_ACCEPTFILTER.name();
     }
 
-    @Override
-    public ChannelOption<?> channelOption(String name) {
-        return DefaultChannelOptionFactory.channelOption(name, KQueueChannelOption.class, UnixChannelOption.class);
+    /**
+     * Default constructor.
+     *
+     * @param channelOptions The ChannelOptions class.
+     */
+    @Inject
+    public KQueueChannelOptionFactory(@Named("KQueueChannelOptions") ChannelOptions channelOptions) {
+        super(channelOptions);
     }
 
     @Override
-    public Object convertValue(ChannelOption<?> option, Object value, Environment env) {
-        return DefaultChannelOptionFactory.convertValue(option, KQueueChannelOption.class, value, env);
+    public ChannelOption<?> channelOption(String name) {
+        return channelOption(name, KQueueChannelOption.class, UnixChannelOption.class);
     }
 
     @Override

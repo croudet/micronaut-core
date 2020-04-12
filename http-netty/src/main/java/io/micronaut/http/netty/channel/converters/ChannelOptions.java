@@ -15,32 +15,22 @@
  */
 package io.micronaut.http.netty.channel.converters;
 
-import io.micronaut.context.env.Environment;
-import io.micronaut.core.annotation.Internal;
+import java.util.Optional;
+
 import io.netty.channel.ChannelOption;
 
 /**
- * Creates channel options.
+ * Returns the channel options argument type.
+ *
  * @author croudet
  */
-@Internal
-public interface ChannelOptionFactory {
+public interface ChannelOptions {
 
     /**
-     * Creates a channel options.
-     * @param name The name of the option.
-     * @return A channel option.
+     * Returns the channel options argument type.
+     * @param option A channel option.
+     * @return A class.
      */
-    default ChannelOption<?> channelOption(String name) {
-        return ChannelOption.valueOf(name);
-    }
-
-    /**
-     * Converts the specified value given the channel option type.
-     * @param option The channel option.
-     * @param value The value to convert.
-     * @param env The environment use for the conversion.
-     * @return The converted value.
-     */
-    Object convertValue(ChannelOption<?> option, Object value, Environment env);
+     @SuppressWarnings("rawtypes")
+    Optional<Class> channelOptionType(ChannelOption<?> option);
 }
