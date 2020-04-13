@@ -27,11 +27,9 @@ import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.TypeConverterRegistrar;
 import io.micronaut.http.netty.channel.KQueueAvailabilityCondition;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.kqueue.AcceptFilter;
 import io.netty.channel.kqueue.KQueue;
 import io.netty.channel.kqueue.KQueueChannelOption;
-import io.netty.channel.unix.UnixChannelOption;
 
 /**
  * Creates channel options.
@@ -55,11 +53,6 @@ public class KQueueChannelOptionFactory extends DefaultChannelOptionFactory impl
     @Inject
     public KQueueChannelOptionFactory(@Named("KQueueChannelOptions") ChannelOptions channelOptions) {
         super(channelOptions);
-    }
-
-    @Override
-    public ChannelOption<?> channelOption(String name) {
-        return channelOption(name, KQueueChannelOption.class, UnixChannelOption.class);
     }
 
     @Override

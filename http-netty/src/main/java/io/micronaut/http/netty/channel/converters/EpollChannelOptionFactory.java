@@ -22,10 +22,8 @@ import javax.inject.Singleton;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.http.netty.channel.EpollAvailabilityCondition;
-import io.netty.channel.ChannelOption;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollChannelOption;
-import io.netty.channel.unix.UnixChannelOption;
 
 /**
  * Creates channel options.
@@ -49,11 +47,6 @@ public class EpollChannelOptionFactory extends DefaultChannelOptionFactory {
     @Inject
     public EpollChannelOptionFactory(@Named("EpollChannelOptions") ChannelOptions channelOptions) {
         super(channelOptions);
-    }
-
-    @Override
-    public ChannelOption<?> channelOption(String name) {
-        return channelOption(name, EpollChannelOption.class, UnixChannelOption.class);
     }
 
 }

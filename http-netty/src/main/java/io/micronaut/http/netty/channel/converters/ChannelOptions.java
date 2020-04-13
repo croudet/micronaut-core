@@ -20,11 +20,20 @@ import java.util.Optional;
 import io.netty.channel.ChannelOption;
 
 /**
- * Returns the channel options argument type.
+ * ChannelOptions look up functions.
  *
  * @author croudet
  */
 public interface ChannelOptions {
+
+    /**
+     * Returns the internal name of the option.
+     * @param name The field name of the option.
+     * @return A name.
+     */
+    default String channelOptionInternalName(String name) {
+        return name;
+    }
 
     /**
      * Returns the channel options argument type.
@@ -33,4 +42,5 @@ public interface ChannelOptions {
      */
      @SuppressWarnings("rawtypes")
     Optional<Class> channelOptionType(ChannelOption<?> option);
+
 }

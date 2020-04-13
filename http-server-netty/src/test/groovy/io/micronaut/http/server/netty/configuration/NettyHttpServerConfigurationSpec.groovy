@@ -42,8 +42,11 @@ import io.micronaut.http.netty.channel.EpollEventLoopGroupFactory
 import io.micronaut.http.netty.channel.EventLoopGroupFactory
 import io.micronaut.http.netty.channel.converters.ChannelOptionFactory
 import io.micronaut.http.netty.channel.converters.DefaultChannelOptionFactory
+import io.micronaut.http.netty.channel.converters.DefaultChannelOptions
 import io.micronaut.http.netty.channel.converters.EpollChannelOptionFactory
+import io.micronaut.http.netty.channel.converters.EpollChannelOptions
 import io.micronaut.http.netty.channel.converters.KQueueChannelOptionFactory
+import io.micronaut.http.netty.channel.converters.KQueueChannelOptions
 import io.micronaut.http.server.cors.CorsOriginConfiguration
 import io.micronaut.http.server.netty.NettyHttpServer
 import io.micronaut.http.server.types.files.SystemFile
@@ -85,7 +88,7 @@ class NettyHttpServerConfigurationSpec extends Specification {
 
     void "test netty server epoll native channel option conversion"() {
         given:
-        ChannelOptionFactory epollChannelOptionFactory = new EpollChannelOptionFactory()
+        ChannelOptionFactory epollChannelOptionFactory = new EpollChannelOptionFactory(new EpollChannelOptions())
 
         when:
         ChannelOption option = epollChannelOptionFactory.channelOption("TCP_QUICKACK")
@@ -120,7 +123,7 @@ class NettyHttpServerConfigurationSpec extends Specification {
 
     void "test netty server kqueue native channel option conversion"() {
         given:
-        ChannelOptionFactory kqueueChannelOptionFactory = new KQueueChannelOptionFactory()
+        ChannelOptionFactory kqueueChannelOptionFactory = new KQueueChannelOptionFactory(new KQueueChannelOptions())
 
         when:
         ChannelOption option = kqueueChannelOptionFactory.channelOption("TCP_QUICKACK")
@@ -155,7 +158,7 @@ class NettyHttpServerConfigurationSpec extends Specification {
 
     void "test netty server default channel option conversion"() {
         given:
-        ChannelOptionFactory channelOptionFactory = new DefaultChannelOptionFactory()
+        ChannelOptionFactory channelOptionFactory = new DefaultChannelOptionFactory(new DefaultChannelOptions())
 
         when:
         ChannelOption option = channelOptionFactory.channelOption("TCP_QUICKACK")

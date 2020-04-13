@@ -55,19 +55,8 @@ public class DefaultChannelOptionFactory implements ChannelOptionFactory {
         return value;
     }
 
-    /**
-     * Creates a channel options.
-     * @param name The name of the option.
-     * @param classes The classes to check.
-     * @return A channel option.
-     */
-    static ChannelOption<?> channelOption(String name, Class<?>... classes) {
-        for (Class<?> cls: classes) {
-            final String composedName = cls.getName() + '#' + name;
-            if (ChannelOption.exists(composedName)) {
-                return ChannelOption.valueOf(composedName);
-            }
-        }
-        return ChannelOption.valueOf(name);
+    @Override
+    public ChannelOption<?> channelOption(String name) {
+        return ChannelOption.valueOf(channelOptions.channelOptionInternalName(name));
     }
 }
